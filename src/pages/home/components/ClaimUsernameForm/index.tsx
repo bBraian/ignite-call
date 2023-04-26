@@ -39,7 +39,7 @@ type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
                 </Button>
             </Form>
             <FormAnnotation>
-                <Text size="sm" style={{color: errors.username ? '#ff5d5d' : '#a9a9b2'}}>
+                <Text size="sm" style={{color: errors.username ? '#F75A68' : '#a9a9b2'}}>
                     {errors.username ? errors.username.message : 'Digite o nome do usuário desejado'}
                 </Text>
             </FormAnnotation>

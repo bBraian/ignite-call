@@ -5,8 +5,6 @@ import { ArrowRight } from "phosphor-react";
 import { signIn } from "next-auth/react";
 
 export default function Register() {
-    // async function handleRegister() {
-    // }
 
     return (
         <Container>

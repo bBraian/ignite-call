@@ -38,11 +38,15 @@ export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapte
       },
 
       async getUser(id) {
-        const user = await prisma.user.findUniqueOrThrow({
+        const user = await prisma.user.findUnique({
             where: {
                 id
             }
         })
+
+        if(!user) {
+            return null
+        }
 
         return {
             id: user.id,
@@ -55,11 +59,15 @@ export function PrismaAdapter(req: NextApiRequest, res: NextApiResponse): Adapte
       },
 
       async getUserByEmail(email) {
-        const user = await prisma.user.findUniqueOrThrow({
+        const user = await prisma.user.findUnique({
             where: {
                 email
             }
         })
+
+        if(!user) {
+            return null
+        }
 
         return {
             id: user.id,

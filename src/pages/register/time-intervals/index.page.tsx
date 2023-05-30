@@ -1,14 +1,28 @@
 import { Button, Checkbox, Heading, MultiStep, Text, TextInput } from "@ignite-ui/react";
 import { Container, Header } from "../styles";
-import { IntervalBox, IntervalConteiner, IntervalDay, IntervalInputs, IntervalItem } from "./styles";
+import { FormError, IntervalBox, IntervalConteiner, IntervalDay, IntervalInputs, IntervalItem } from "./styles";
 import { ArrowRight } from "phosphor-react";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { getWeekDays } from "@/utils/get-week-days";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const timeIntervalsForSchema = z.object({
-
+    intervals: z.array(
+        z.object({
+            weekDay: z.number().min(0).max(6),
+            enabled: z.boolean(),
+            startTime: z.string(),
+            endTime: z.string(),
+        })
+    ).length(7)
+    .transform(intervals => intervals.filter(intervals => intervals.enabled))
+    .refine(intervals => intervals.length > 0, {
+        message: 'Você precisa selecionar pelo menos um dia da semana!'
+    })
 })
+
+type timeIntervalsFormData = z.infer<typeof timeIntervalsForSchema>
 
 export default function TimeIntervals() {
     const {
@@ -21,6 +35,7 @@ export default function TimeIntervals() {
             errors,
         }
     } = useForm({
+        resolver: zodResolver(timeIntervalsForSchema),
         defaultValues: {
             intervals: [
                 { weekDay: 0, enabled: false, startTime: '08:00', endTime: '18:00' },
@@ -43,8 +58,8 @@ export default function TimeIntervals() {
 
     const weekDays = getWeekDays()
 
-    async function handleSetTimeIntervals() {
-
+    async function handleSetTimeIntervals(data: timeIntervalsFormData) {
+        console.log(data)
     }
 
     return (
@@ -99,7 +114,13 @@ export default function TimeIntervals() {
                    ))}
                 </IntervalConteiner>
 
-                <Button type="submit">
+                {errors.intervals && (
+                    <FormError size="sm">
+                        {errors.intervals.message}
+                    </FormError>
+                )}
+
+                <Button type="submit" disabled={isSubmitting}>
                     Próximo passo
                     <ArrowRight />
                 </Button>

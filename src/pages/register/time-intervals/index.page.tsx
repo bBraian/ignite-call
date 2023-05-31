@@ -6,6 +6,8 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { getWeekDays } from "@/utils/get-week-days";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { convertTimeToMinutes } from "@/utils/convert-time-to-minutes";
+import { api } from "@/lib/axios";
 
 const timeIntervalsForSchema = z.object({
     intervals: z.array(
@@ -20,9 +22,24 @@ const timeIntervalsForSchema = z.object({
     .refine(intervals => intervals.length > 0, {
         message: 'Você precisa selecionar pelo menos um dia da semana!'
     })
+    .transform(intervals => (
+        intervals.map(interval => {
+            return {
+                weekDay: interval.weekDay,
+                startTimeInMinutes: convertTimeToMinutes(interval.startTime),
+                endTimeInMinutes: convertTimeToMinutes(interval.endTime),
+            }
+        })
+    ))
+    .refine(intervals => (
+        intervals.every(interval => interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes)
+    ), {
+        message: 'O horário de término deve ser pelo menos 1h distante do início.'
+    })
 })
 
-type timeIntervalsFormData = z.infer<typeof timeIntervalsForSchema>
+type TimeIntervalsFormInput = z.input<typeof timeIntervalsForSchema>
+type timeIntervalsFormOutput = z.output<typeof timeIntervalsForSchema>
 
 export default function TimeIntervals() {
     const {
@@ -34,7 +51,7 @@ export default function TimeIntervals() {
             isSubmitting,
             errors,
         }
-    } = useForm({
+    } = useForm<TimeIntervalsFormInput>({
         resolver: zodResolver(timeIntervalsForSchema),
         defaultValues: {
             intervals: [
@@ -58,8 +75,9 @@ export default function TimeIntervals() {
 
     const weekDays = getWeekDays()
 
-    async function handleSetTimeIntervals(data: timeIntervalsFormData) {
-        console.log(data)
+    async function handleSetTimeIntervals(data: any) {
+        const { intervals } = data as TimeIntervalsFormInput
+        await api.post('/users/time-intervals', { intervals })
     }
 
     return (

@@ -13,7 +13,6 @@ interface Availability {
 
 export function CalendarStep() {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-    // const [availability, setAvailability] = useState<Availability | null>(null)
 
     const router = useRouter()
 
@@ -38,6 +37,7 @@ export function CalendarStep() {
         enabled: !!selectedDate
     })
 
+    console.log(availability)
     return (
         <Container isTimePickerOpen={isDateSelected}>
             <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />

@@ -34,7 +34,6 @@ export function CalendarStep({ onSelectDateTime }: CalendarStepProps) {
                 date: selectedDateWithoutTime
             }
         })
-        console.log(availability)
         return res.data
     },
     {
@@ -45,8 +44,7 @@ export function CalendarStep({ onSelectDateTime }: CalendarStepProps) {
         const dateWithTime = dayjs(selectedDate).set('hour', hour).startOf('hour').toDate()
         onSelectDateTime(dateWithTime)
     }
-
-    console.log(availability)
+    
     return (
         <Container isTimePickerOpen={isDateSelected}>
             <Calendar selectedDate={selectedDate} onDateSelected={setSelectedDate} />

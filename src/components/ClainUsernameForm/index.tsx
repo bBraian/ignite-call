@@ -1,23 +1,24 @@
 import { Button, Text, TextInput } from '@ignite-ui/react'
-import { Form, FormAnnotation } from './styles'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { Form, FormAnnotation } from './styles'
 import { useRouter } from 'next/router'
 
 const claimUsernameFormSchema = z.object({
   username: z
     .string()
-    .min(3, { message: 'Usuário deve ter mais de 3 caracteres.' })
-    .regex(/^([a-z\\\\-]+)$/i, {
-      message: 'Usuário deve ter apenas letras e hifens.',
+    .min(3, { message: 'O usuário precisa ter pelo menos 3 letras.' })
+    .regex(/^([a-z\\-]+)$/i, {
+      message: 'O usuário pode ter apenas letras e hifens.',
     })
     .transform((username) => username.toLowerCase()),
 })
 
-export function ClaimUsernameForm() {
-  type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
+type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
+
+export function ClainUsernameForm() {
   const {
     register,
     handleSubmit,
@@ -30,6 +31,7 @@ export function ClaimUsernameForm() {
 
   async function handleClaimUsername(data: ClaimUsernameFormData) {
     const { username } = data
+
     await router.push(`/register?username=${username}`)
   }
 
@@ -42,16 +44,13 @@ export function ClaimUsernameForm() {
           placeholder="seu-usuario"
           {...register('username')}
         />
-        <Button size="sm" type="submit" disabled={isSubmitting}>
-          Reservar usuário
+        <Button size="sm" disabled={isSubmitting} type="submit">
+          Reservar
           <ArrowRight />
         </Button>
       </Form>
       <FormAnnotation>
-        <Text
-          size="sm"
-          style={{ color: errors.username ? '#F75A68' : '#a9a9b2' }}
-        >
+        <Text size={'sm'}>
           {errors.username
             ? errors.username.message
             : 'Digite o nome do usuário desejado'}

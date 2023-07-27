@@ -1,4 +1,4 @@
-import { Box, Text, styled } from '@ignite-ui/react'
+import { Box, styled, Text } from '@ignite-ui/react'
 
 export const IntervalBox = styled(Box, {
   marginTop: '$6',
@@ -6,7 +6,7 @@ export const IntervalBox = styled(Box, {
   flexDirection: 'column',
 })
 
-export const IntervalConteiner = styled('div', {
+export const IntervalsContainer = styled('div', {
   border: '1px solid $gray600',
   borderRadius: '$md',
   marginBottom: '$4',

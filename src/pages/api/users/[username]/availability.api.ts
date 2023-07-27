@@ -17,14 +17,10 @@ export default async function handle(
     return res.status(400).json({ message: 'Date not provided' })
   }
 
-  const user = await prisma.user.findUnique({
-    where: {
-      username,
-    },
-  })
+  const user = await prisma.user.findUnique({ where: { username } })
 
   if (!user) {
-    return res.status(400).json({ message: 'User does not exist' })
+    return res.status(400).json({ message: 'User does not provided' })
   }
 
   const referenceDate = dayjs(String(date))
@@ -45,10 +41,8 @@ export default async function handle(
     return res.json({ possibleTimes: [], availableTimes: [] })
   }
 
-  const { time_end_in_minutes, time_start_in_minutes } = userAvailability
-
-  const startHour = time_start_in_minutes / 60
-  const endHour = time_end_in_minutes / 60
+  const startHour = userAvailability.time_start_in_minutes / 60
+  const endHour = userAvailability.time_end_in_minutes / 60
 
   const possibleTimes = Array.from({ length: endHour - startHour }).map(
     (_, i) => {
@@ -56,7 +50,7 @@ export default async function handle(
     },
   )
 
-  const blocketTimes = await prisma.scheduling.findMany({
+  const blockedTimes = await prisma.scheduling.findMany({
     select: {
       date: true,
     },
@@ -70,13 +64,9 @@ export default async function handle(
   })
 
   const availableTimes = possibleTimes.filter((time) => {
-    const isTimeBlocked = blocketTimes.some(
-      (blockeTime) => blockeTime.date.getHours() === time,
+    return !blockedTimes.some(
+      (blockeTimes) => blockeTimes.date.getHours() === time,
     )
-
-    const isInPast = referenceDate.set('hour', time).isBefore(new Date())
-
-    return !isTimeBlocked && !isInPast
   })
 
   return res.json({ possibleTimes, availableTimes })

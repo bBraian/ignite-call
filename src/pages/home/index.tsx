@@ -1,10 +1,10 @@
-import { Heading, Text } from "@ignite-ui/react";
-import { Container, Hero, Preview } from "./styles";
-import Image from "next/image";
+import { Heading, Text } from '@ignite-ui/react'
+import { Container, Hero, Preview } from './styles'
+import Image from 'next/image'
 
 import previewImage from '../../assets/appPreview.png'
-import { ClaimUsernameForm } from "./components/ClaimUsernameForm";
-import { NextSeo } from "next-seo";
+import { ClaimUsernameForm } from './components/ClaimUsernameForm'
+import { NextSeo } from 'next-seo'
 
 export default function Home() {
   return (
@@ -25,7 +25,7 @@ export default function Home() {
         </Hero>
 
         <Preview>
-          <Image 
+          <Image
             src={previewImage}
             height={400}
             quality={100}
@@ -35,6 +35,5 @@ export default function Home() {
         </Preview>
       </Container>
     </>
-
   )
 }
